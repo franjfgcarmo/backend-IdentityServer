@@ -55,24 +55,24 @@ namespace ImageGallery.API
                 We register access token Validation, middleware.
              */
 
-            //services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-            //    .AddIdentityServerAuthentication(options =>
-            //    {
-            //        options.Authority = "https://localhost:5001/";
-            //        options.ApiName = "imagegalleryapi";
-            //        options.ApiSecret = "apisecret";
-            //    });
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = "https://localhost:5001";
+                    options.ApiName = "imagegalleryapi";
+                    options.ApiSecret = "apisecret";
+                });
 
-            services.AddAuthentication("Bearer")
-              .AddJwtBearer(options =>
-              {
-                  options.Authority = "https://localhost:5001/";
-                  options.Audience = "imagegalleryapi";
-                  options.TokenValidationParameters = new TokenValidationParameters
-                  {
-                      ValidateAudience = false,
-                  };
-              });
+            //services.AddAuthentication("Bearer")
+            //  .AddJwtBearer(options =>
+            //  {
+            //      options.Authority = "https://localhost:5001/";
+            //      options.Audience = "imagegalleryapi";
+            //      options.TokenValidationParameters = new TokenValidationParameters
+            //      {
+            //          ValidateAudience = false,
+            //      };
+            //  });
             //.AddOAuth2Introspection(OAuth2IntrospectionDefaults.AuthenticationScheme, options =>
             //{
             //    options.Authority = "https://localhost:5001/";
