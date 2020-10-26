@@ -61,7 +61,9 @@ namespace ConceptTest.IDP
                   "Image Gallery API",
                   new List<string>() { "role" })
               {
-                  ApiSecrets = { new Secret("apisecret".Sha256()) }
+                  ApiSecrets = { new Secret("apisecret".Sha256()) },
+                  Scopes = { "imagegalleryapi"}
+
               }
         };
 
@@ -79,7 +81,7 @@ namespace ConceptTest.IDP
             {
                 new Client
                 {
-                    //AccessTokenType = AccessTokenType.Reference,
+                    AccessTokenType = AccessTokenType.Reference,
                     //IdentityTokenLifetime=,//It´s to the number of seconds the tokens is valid, default 5 minutes.
                     //AuthorizationCodeLifetime=,//It´s exchanged for one or more tokens when the token endpoint is called.
                     //That´s something that happens during the initial flow, is it also warants a low lifetime, as we
