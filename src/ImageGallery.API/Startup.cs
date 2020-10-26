@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using IdentityModel.AspNetCore.AccessTokenValidation;
 using IdentityModel.AspNetCore.OAuth2Introspection;
 using IdentityServer4.AccessTokenValidation;
 using ImageGallery.API.Authorization;
@@ -54,32 +55,35 @@ namespace ImageGallery.API
                 validate that the token is valid to be used with this api (aka audience)
                 We register access token Validation, middleware.
              */
-
-            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                .AddIdentityServerAuthentication(options =>
-                {
-                    options.Authority = "https://localhost:5001";
-                    options.ApiName = "imagegalleryapi";
-                    options.ApiSecret = "apisecret";
-                });
-
-            //services.AddAuthentication("Bearer")
-            //  .AddJwtBearer(options =>
-            //  {
-            //      options.Authority = "https://localhost:5001/";
-            //      options.Audience = "imagegalleryapi";
-            //      options.TokenValidationParameters = new TokenValidationParameters
-            //      {
-            //          ValidateAudience = false,
-            //      };
-            //  });
-            //.AddOAuth2Introspection(OAuth2IntrospectionDefaults.AuthenticationScheme, options =>
-            //{
-            //    options.Authority = "https://localhost:5001/";
-            //    options.ClientId = "imagegalleryapi";
-            //    options.ClientSecret = "apisecret";
-            //}); 
-
+            /*********************************************1*********************************************************/
+            //services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+            //    .AddIdentityServerAuthentication(options =>
+            //    {
+            //        options.Authority = "https://localhost:5001";
+            //        options.ApiName = "imagegalleryapi";
+            //        options.ApiSecret = "apisecret";
+            //    });
+            /*********************************************1*********************************************************/
+            /*********************************************2*********************************************************/
+            services.AddAuthentication("Bearer")
+              .AddJwtBearer(options =>
+              {
+                  options.Authority = "https://localhost:5001/";
+                  options.Audience = "imagegalleryapi";
+              options.ForwardDefaultSelector = Selector.ForwardReferenceToken("introspection");
+              })
+            .AddOAuth2Introspection("introspection", options =>
+            {
+                options.Authority = "https://localhost:5001/";
+                options.ClientId = "imagegalleryapi";
+                options.ClientSecret = "apisecret";
+            });
+            /*********************************************2*********************************************************/
+            /*********************************************3*********************************************************/
+            
+            /*********************************************3*********************************************************/
+            // https://identityserver4.readthedocs.io/en/latest/quickstarts/1_client_credentials.html
+            //http://docs.identityserver.io/en/latest/topics/apis.html
             // register the DbContext on the container, getting the connection string from
             // appSettings (note: use this during development; in a production environment,
             // it's better to store the connection string in an environment variable)

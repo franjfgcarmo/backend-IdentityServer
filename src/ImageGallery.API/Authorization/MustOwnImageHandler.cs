@@ -33,10 +33,10 @@ namespace ImageGallery.API.Authorization
                 context.Fail();
                 return Task.CompletedTask;
             }
-            var ownerId = context.User.Claims.
-                FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
-            if(!_galleryRepository.IsImageOwner(imageIdAsGuid, ownerId))
+            //var ownerId = context.User.Claims.
+            //    FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var ownerId = context.User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            if (!_galleryRepository.IsImageOwner(imageIdAsGuid, ownerId))
             {
                 context.Fail();
                 return Task.CompletedTask;

@@ -36,7 +36,9 @@ namespace ImageGallery.API.Controllers
         [HttpGet()]
         public IActionResult GetImages()
         {
-            var ownerId = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+            //var ownerId = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+            var ownerId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+
             // get from repo
             var imagesFromRepo = _galleryRepository.GetImages(ownerId);
 
@@ -92,7 +94,8 @@ namespace ImageGallery.API.Controllers
             // ownerId should be set - can't save image in starter solution, will
             // be fixed during the course
             //imageEntity.OwnerId = ...;
-            var ownerId = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+            //var ownerId = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+            var ownerId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
             imageEntity.OwnerId = ownerId;
             // add and save.  
             _galleryRepository.AddImage(imageEntity);
