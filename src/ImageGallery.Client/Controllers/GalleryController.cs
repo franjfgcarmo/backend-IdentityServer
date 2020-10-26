@@ -189,10 +189,46 @@ namespace ImageGallery.Client.Controllers
         }
         public async Task Logout()
         {
+            var client = _httpClientFactory.CreateClient("IDPClient");
+            //OpenID Provider Issuer discovery is the process of determining the location of the OpenID Provider.
+            var discoveryDocumentResponse = await client.GetDiscoveryDocumentAsync();
+            if (discoveryDocumentResponse.IsError)
+            {
+                throw new Exception(discoveryDocumentResponse.Error);
+            }
+
+            var accessTokenRevocationResponse = await client.RevokeTokenAsync(
+                new TokenRevocationRequest
+                {
+                    Address = discoveryDocumentResponse.RevocationEndpoint,
+                    ClientId = "imagegalleryclient",
+                    ClientSecret = "secret",
+                    Token = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken)
+                });
+
+            if (accessTokenRevocationResponse.IsError)
+            {
+                throw new Exception(accessTokenRevocationResponse.Error);
+            }
+
+            var refreshTokenRevocationResponse = await client.RevokeTokenAsync(
+                new TokenRevocationRequest
+                {
+                    Address = discoveryDocumentResponse.RevocationEndpoint,
+                    ClientId = "imagegalleryclient",
+                    ClientSecret = "secret",
+                    Token = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken)
+                });
+
+            if (refreshTokenRevocationResponse.IsError)
+            {
+                throw new Exception(accessTokenRevocationResponse.Error);
+            }
             //siginout of cookie Authentication.
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             //signout of IDP.
             await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
+
         }
         /// <summary>
         /// Let´s add a little bit of helper code to check out that identity token and the resulting user object.
